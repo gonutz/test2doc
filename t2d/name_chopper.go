@@ -1,4 +1,4 @@
-package test2doc
+package t2d
 
 import (
 	"strings"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	t2d "code.google.com/p/test2doc/test2doc"
+	t2d "code.google.com/p/test2doc/t2d"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -32,7 +32,6 @@ type DocCreator struct {
 }
 
 func main() {
-	os.Args = append(os.Args, "C:/Users/Lars/Documents/gocode/src/code.google.com/test2doc")
 	if len(os.Args) != 2 {
 		fmt.Println("Please specify the root directory of your code.")
 		return
