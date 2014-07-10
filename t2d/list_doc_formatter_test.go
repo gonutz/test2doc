@@ -2,12 +2,12 @@ package t2d
 
 import "testing"
 
-func TestWithoutAnyTestFileOutputIsEmptyString(t *testing.T) {
+func TestWithoutAnyTestFileTheOutputIsEmptyString(t *testing.T) {
 	formatter := NewListDocFormatter("")
 	checkDoc(t, formatter, "")
 }
 
-func TestFileNameWithoutTestDotGoComesFirst(t *testing.T) {
+func TestFileNameWithout_TestDotGo_ComesFirst(t *testing.T) {
 	formatter := NewListDocFormatter("")
 	formatter.Append("some_test.go", [][]string{})
 	checkDoc(t, formatter, "some:\n")
@@ -25,16 +25,22 @@ func TestBackslashesInPathAreConvertedToSlashes(t *testing.T) {
 	checkDoc(t, formatter, "src/unit:\n")
 }
 
-func TestPrefixPathCanHaveBackslashAtTheEnd(t *testing.T) {
+func TestRootPathCanHaveBackslashAtTheEnd(t *testing.T) {
 	formatter := NewListDocFormatter(`\root\path\`)
 	formatter.Append(`\root\path\src\unit_test.go`, [][]string{})
 	checkDoc(t, formatter, "src/unit:\n")
 }
 
-func TestPrefixPathMayMixSlashesAndBackslashes(t *testing.T) {
+func TestRootPathMayMixSlashesAndBackslashes(t *testing.T) {
 	formatter := NewListDocFormatter(`/root\path/`)
 	formatter.Append(`\root\path\src\unit_test.go`, [][]string{})
 	checkDoc(t, formatter, "src/unit:\n")
+}
+
+func TestIfRootPathEqualsPath_TheFileNameIsUsed(t *testing.T) {
+	formatter := NewListDocFormatter("path/my_test.go")
+	formatter.Append("path/my_test.go", [][]string{})
+	checkDoc(t, formatter, "my:\n")
 }
 
 func TestEverySentenceIsIndentendOnANewLine(t *testing.T) {
