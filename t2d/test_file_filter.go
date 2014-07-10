@@ -9,9 +9,16 @@ type TestFileFilter struct {
 	Files []string
 }
 
-func (t *TestFileFilter) Walk(path string, f os.FileInfo, err error) error {
-	if err == nil && strings.HasSuffix(path, "_test.go") && !f.IsDir() {
-		t.Files = append(t.Files, path)
+func NewTestFileFilter() TestFileFilter {
+	return TestFileFilter{}
+}
+
+func (_ TestFileFilter) IsValid(path string) bool {
+	if strings.HasSuffix(path, "_test.go") {
+		f, err := os.Stat(path)
+		if err == nil {
+			return !f.IsDir()
+		}
 	}
-	return nil
+	return false
 }

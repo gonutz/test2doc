@@ -11,17 +11,17 @@ import (
 // results from run to run so this is a statistical test that may return a false
 // positive every now and then.
 func TestTestsFromFileAreExtractedInOrderOfAppearance(t *testing.T) {
-	file := createFile(`
+	fileName := createFile(`
 			package sometest
 			import "testing"
 
 			func TestSomeThing1(t *testing.T){}
 			func TestSomeThing2(t *testing.T){}
 			func TestSomeThing3(t *testing.T){}`)
-	defer deleteFile(file)
+	defer deleteFile(fileName)
 
 	for i := 0; i < 100; i++ {
-		if !checkExtractsNames(t, file.Name(),
+		if !checkExtractsNames(t, fileName,
 			"TestSomeThing1",
 			"TestSomeThing2",
 			"TestSomeThing3") {
@@ -31,7 +31,7 @@ func TestTestsFromFileAreExtractedInOrderOfAppearance(t *testing.T) {
 }
 
 func TestOnlyValidTestMethodNamesAreExtracted(t *testing.T) {
-	file := createFile(`
+	fileName := createFile(`
 			package sometest
 			import "testing"
 			
@@ -49,23 +49,23 @@ func TestOnlyValidTestMethodNamesAreExtracted(t *testing.T) {
 			func TestTooManyArguments(t *testing.T, t *testing.T){}
 			func TestMustNotHaveReturnType(t *testing.T) int {}
 			var TestNoFunction int`)
-	defer deleteFile(file)
+	defer deleteFile(fileName)
 
-	checkExtractsNames(t, file.Name(),
+	checkExtractsNames(t, fileName,
 		"Test",
 		"TestActualTest",
 		"Test_ThisToo")
 }
 
 func TestOnErrorDuringExtraction_ResultIsEmptyArrayAndError(t *testing.T) {
-	names, err := NewTestNameExtractor().ExtractFromFile("invalid_file_name.:///")
+	names, err := NewTestNameExtractor().ExtractTestsFromFile("invalid_file_name.:///")
 	if err == nil {
 		t.Error("error was nil")
 	}
 	checkNames(t, names)
 }
 
-func createFile(content string) (file *os.File) {
+func createFile(content string) string {
 	f, err := ioutil.TempFile("", "test2doc_test_")
 	if err != nil {
 		panic(err)
@@ -74,17 +74,17 @@ func createFile(content string) (file *os.File) {
 	if err != nil {
 		panic(err)
 	}
-	return f
+	defer f.Close()
+	return f.Name()
 }
 
-func deleteFile(file *os.File) {
-	file.Close()
-	os.Remove(file.Name())
+func deleteFile(path string) {
+	os.Remove(path)
 }
 
 func checkNames(t *testing.T, names []string, expected ...string) bool {
 	if len(names) != len(expected) {
-		t.Error(len(expected), "names expected, but they were", names)
+		t.Error(len(expected), "name(s) expected, but they were", names)
 		return false
 	}
 	for i := range expected {
@@ -97,7 +97,7 @@ func checkNames(t *testing.T, names []string, expected ...string) bool {
 }
 
 func checkExtractsNames(t *testing.T, fileName string, expected ...string) (ok bool) {
-	names, err := NewTestNameExtractor().ExtractFromFile(fileName)
+	names, err := NewTestNameExtractor().ExtractTestsFromFile(fileName)
 	if err != nil {
 		t.Error("error was not nil")
 	}

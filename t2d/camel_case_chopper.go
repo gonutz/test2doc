@@ -7,6 +7,8 @@ import (
 
 type CamelCaseChopper struct{}
 
+func NewCamelCaseChopper() CamelCaseChopper { return CamelCaseChopper{} }
+
 func (c CamelCaseChopper) Chop(name string) []string {
 	nameOnly := strings.TrimPrefix(name, "Test")
 	finalWordDelimiter := "A"

@@ -17,7 +17,7 @@ func NewTestNameExtractor() TestNameExtractor {
 	return TestNameExtractor{nameMatcher: r}
 }
 
-func (e TestNameExtractor) ExtractFromFile(path string) ([]string, error) {
+func (e TestNameExtractor) ExtractTestsFromFile(path string) ([]string, error) {
 	astFile, err := parser.ParseFile(token.NewFileSet(), path, nil, 0)
 	if err != nil {
 		return []string{}, err

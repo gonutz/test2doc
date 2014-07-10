@@ -32,7 +32,7 @@ func TestUnicodeLikeÄéßIsSupported(t *testing.T) {
 	checkWords(t, words, "Äöüß", "É", "Ââ")
 }
 
-var c = CamelCaseChopper{}
+var c = NewCamelCaseChopper()
 
 func checkWords(t *testing.T, words []string, expected ...string) {
 	if len(words) != len(expected) {

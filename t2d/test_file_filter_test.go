@@ -2,55 +2,44 @@ package t2d
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
-	"time"
 )
 
-func TestOnlyFilesEndingInUnderscoreTestDotGoAreTaken(t *testing.T) {
-	filter := TestFileFilter{}
-	filter.Walk("some/path/not_this.go", FileStub{}, nil)
-	filter.Walk("some/path/no_test.ogg", FileStub{}, nil)
-	filter.Walk("take/this_test.go", FileStub{}, nil)
-	filter.Walk("but/not/thistest.go", FileStub{}, nil)
-	checkFile(t, filter, "take/this_test.go")
+func TestFilesNotEndingIn_UnderscoreTestDotGo_AreInvalid(t *testing.T) {
+	filter := NewTestFileFilter()
+	invalid := []string{
+		"some/path/not_this.go",
+		"some/path/no_test.ogg",
+		"dont/take/thistest.go"}
+	for _, path := range invalid {
+		if filter.IsValid(path) {
+			t.Error(path, "was valid but should not be")
+		}
+	}
 }
 
-func TestDirectoriesAreNeverTaken(t *testing.T) {
-	filter := TestFileFilter{}
-	filter.Walk("dir_ending_in_test.go", DirStub{}, nil)
-	filter.Walk("file_ending_in_test.go", FileStub{}, nil)
-	checkFile(t, filter, "file_ending_in_test.go")
+func TestFoldersAreNeverValidTestFiles(t *testing.T) {
+	filter := NewTestFileFilter()
+	dir := createFolder("folder_test.go")
+	defer deleteFile(dir)
+	if filter.IsValid(dir) {
+		t.Error("folder was valid")
+	}
 }
 
-func TestIfAnErrorOccursInWalkingAFile_TheFileIsNotTaken(t *testing.T) {
-	filter := TestFileFilter{}
-	filter.Walk("no_error_test.go", FileStub{}, nil)
-	filter.Walk("has_error_test.go", FileStub{}, os.ErrPermission)
-	checkFile(t, filter, "no_error_test.go")
+func TestRegularFilesEndingIn_UnderscoreTestDotGo_AreValid(t *testing.T) {
+	filter := NewTestFileFilter()
+	f := createFileAt(filepath.Join(os.TempDir(), "some_test.go"))
+	defer deleteFile(f)
+	if !filter.IsValid(f) {
+		t.Error(f, "was invalid")
+	}
 }
 
-type DirStub struct{}
-
-func (d DirStub) Name() string       { return "" }
-func (d DirStub) Size() int64        { return 0 }
-func (d DirStub) Mode() os.FileMode  { return 0 }
-func (d DirStub) ModTime() time.Time { return time.Time{} }
-func (d DirStub) IsDir() bool        { return true }
-func (d DirStub) Sys() interface{}   { return nil }
-
-type FileStub struct{}
-
-func (d FileStub) Name() string       { return "" }
-func (d FileStub) Size() int64        { return 0 }
-func (d FileStub) Mode() os.FileMode  { return 0 }
-func (d FileStub) ModTime() time.Time { return time.Time{} }
-func (d FileStub) IsDir() bool        { return false }
-func (d FileStub) Sys() interface{}   { return nil }
-
-func checkFile(t *testing.T, filter TestFileFilter, path string) {
-	if len(filter.Files) != 1 {
-		t.Error("1 file expected, but was", filter.Files)
-	} else if filter.Files[0] != path {
-		t.Error("file was", filter.Files[0])
+func TestFilesThatDontExistsAreInvalid(t *testing.T) {
+	filter := NewTestFileFilter()
+	if filter.IsValid("invalid///path/ending_in_test.go") {
+		t.Error("non-existing file was valid")
 	}
 }
