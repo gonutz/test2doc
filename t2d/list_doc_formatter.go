@@ -12,8 +12,12 @@ type ListDocFormatter struct {
 }
 
 func NewListDocFormatter(cutPathPrefix string) *ListDocFormatter {
-	slashPath := strings.Replace(cutPathPrefix, `\`, "/", -1)
+	slashPath := forwardSlashesOnly(cutPathPrefix)
 	return &ListDocFormatter{root: slashPath}
+}
+
+func forwardSlashesOnly(path string) string {
+	return strings.Replace(path, `\`, "/", -1)
 }
 
 func (f *ListDocFormatter) Format() string {
@@ -40,10 +44,6 @@ func (f *ListDocFormatter) appendUnitName(testFilePath string) {
 	unitName := cutTestSuffix(withoutRoot)
 
 	f.doc += fmt.Sprintln(unitName + ":")
-}
-
-func forwardSlashesOnly(path string) string {
-	return strings.Replace(path, `\`, "/", -1)
 }
 
 func cutTestSuffix(path string) string {

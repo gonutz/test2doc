@@ -50,7 +50,7 @@ func createTestFolderTree() (root, sub, f1, f2 string) {
 
 func createFolder(name string) string {
 	path := filepath.Join(os.TempDir(), name)
-	os.MkdirAll(path, 0)
+	os.MkdirAll(path, os.ModePerm)
 	return path
 }
 
