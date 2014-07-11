@@ -1,7 +1,7 @@
 package main
 
 import (
-	t2d "code.google.com/p/test2doc/t2d"
+	"code.google.com/p/test2doc/t2d"
 	"fmt"
 	"os"
 )

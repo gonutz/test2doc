@@ -24,14 +24,29 @@ func (e TestNameExtractor) ExtractTestsFromFile(path string) ([]string, error) {
 	}
 	namedEntites := toList(astFile.Scope.Objects)
 	sort.Sort(namedEntites)
-	names := make([]string, 0, len(namedEntites))
+	testNames := make([]string, 0, len(namedEntites))
 	for _, entity := range namedEntites {
 		if e.isTestFunction(entity) {
-			names = append(names, entity.Name)
+			testNames = append(testNames, entity.Name)
 		}
 	}
-	return names, nil
+	return testNames, nil
 }
+
+func toList(objs map[string]*ast.Object) objectList {
+	list := make([]*ast.Object, 0, len(objs))
+	for _, obj := range objs {
+		list = append(list, obj)
+	}
+	return list
+}
+
+type objectList []*ast.Object
+
+// these functions implement the sorting interface to sort the list by position
+func (objs objectList) Len() int           { return len(objs) }
+func (objs objectList) Less(i, j int) bool { return objs[i].Pos() < objs[j].Pos() }
+func (objs objectList) Swap(i, j int)      { objs[i], objs[j] = objs[j], objs[i] }
 
 func (e TestNameExtractor) isTestFunction(obj *ast.Object) bool {
 	decl, isDecl := obj.Decl.(*ast.FuncDecl)
@@ -45,7 +60,7 @@ func (e TestNameExtractor) isTestFunctionDeclaration(decl *ast.FuncDecl) bool {
 	return e.isTestName(decl.Name.Name) &&
 		doesNotReturnAnything(decl) &&
 		hasExactlyOneParameter(decl) &&
-		parametersIsOfTestType(decl)
+		parameterIsOfTestType(decl)
 }
 
 func (e TestNameExtractor) isTestName(name string) bool {
@@ -60,7 +75,7 @@ func hasExactlyOneParameter(decl *ast.FuncDecl) bool {
 	return decl.Type.Params.NumFields() == 1
 }
 
-func parametersIsOfTestType(decl *ast.FuncDecl) bool {
+func parameterIsOfTestType(decl *ast.FuncDecl) bool {
 	return isTestType(decl.Type.Params.List[0].Type)
 }
 
@@ -80,17 +95,3 @@ func isTestType(e ast.Expr) bool {
 	rightOfDot := selector.Sel.Name
 	return leftOfDot.Name == "testing" && rightOfDot == "T"
 }
-
-type objectList []*ast.Object
-
-func toList(objs map[string]*ast.Object) objectList {
-	list := make([]*ast.Object, 0, len(objs))
-	for _, obj := range objs {
-		list = append(list, obj)
-	}
-	return list
-}
-
-func (objs objectList) Len() int           { return len(objs) }
-func (objs objectList) Less(i, j int) bool { return objs[i].Pos() < objs[j].Pos() }
-func (objs objectList) Swap(i, j int)      { objs[i], objs[j] = objs[j], objs[i] }

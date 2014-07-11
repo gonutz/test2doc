@@ -15,10 +15,15 @@ func NewTestFileFilter() TestFileFilter {
 
 func (_ TestFileFilter) IsValid(path string) bool {
 	if strings.HasSuffix(path, "_test.go") {
-		f, err := os.Stat(path)
-		if err == nil {
-			return !f.IsDir()
-		}
+		return isFileAndNotDirectory(path)
+	}
+	return false
+}
+
+func isFileAndNotDirectory(path string) bool {
+	f, err := os.Stat(path)
+	if err == nil {
+		return !f.IsDir()
 	}
 	return false
 }
