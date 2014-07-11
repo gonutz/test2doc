@@ -20,18 +20,15 @@ type nameReader struct {
 }
 
 // The nameReader is really a state machine and the readFunc is a state. It
-// reads a single rune and outputs the next state or nil to stay in the same
-// state and keep reading.
-type readFunc func(r rune) (changeStateTo readFunc)
+// reads a single rune and outputs the next state and indicates whether the word
+// needs to be chopped at the current position
+type readFunc func(r rune) (nextState readFunc, chopWord bool)
 
-// The string is iterated rune by rune. Each rune is passed to the current state
-// readFunc. If it changes state (return non-nil value) the word is chopped at
-// the current position.
 func (reader nameReader) read(name string) []string {
 	words := make([]string, 0, 20)
 	start := 0
 	for i, r := range name {
-		if next := reader.handler(r); next != nil {
+		if next, chopWord := reader.handler(r); chopWord {
 			reader.handler = next
 			word := name[start:i]
 			start = i
@@ -43,37 +40,37 @@ func (reader nameReader) read(name string) []string {
 	return words
 }
 
-func readWord(r rune) readFunc {
+func readWord(r rune) (nextState readFunc, chopWord bool) {
 	if r == '_' {
-		return skipUnderscore
+		return skipUnderscore, true
 	}
 	if unicode.IsDigit(r) {
-		return readNumber
+		return readNumber, true
 	}
 	if unicode.IsUpper(r) {
-		return readWord
+		return readWord, true
 	}
-	return nil
+	return readWord, false
 }
 
-func readNumber(r rune) readFunc {
+func readNumber(r rune) (nextState readFunc, chopWord bool) {
 	if r == '_' {
-		return skipUnderscore
+		return skipUnderscore, true
 	}
 	if unicode.IsDigit(r) {
-		return nil
+		return readNumber, false
 	}
-	return readWord
+	return readWord, true
 }
 
-func skipUnderscore(r rune) readFunc {
+func skipUnderscore(r rune) (nextState readFunc, chopWord bool) {
 	if r == '_' {
-		return skipUnderscore
+		return skipUnderscore, true
 	}
 	if unicode.IsDigit(r) {
-		return readNumber
+		return readNumber, true
 	}
-	return readWord
+	return readWord, true
 }
 
 func isAllUnderscores(word string) bool {
