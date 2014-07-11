@@ -60,5 +60,7 @@ func cutRootPrefix(file, root string) string {
 }
 
 func (f *ListDocFormatter) appendSentence(sentence []string) {
-	f.doc += fmt.Sprintln("    - " + strings.Join(sentence, " "))
+	if len(sentence) > 0 {
+		f.doc += fmt.Sprintln("    - " + strings.Join(sentence, " "))
+	}
 }

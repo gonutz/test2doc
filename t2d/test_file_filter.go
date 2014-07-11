@@ -2,6 +2,7 @@ package t2d
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -13,9 +14,10 @@ func NewTestFileFilter() TestFileFilter {
 	return TestFileFilter{}
 }
 
-func (_ TestFileFilter) IsValid(path string) bool {
-	if strings.HasSuffix(path, "_test.go") {
-		return isFileAndNotDirectory(path)
+func (_ TestFileFilter) IsValid(fullPath string) bool {
+	if isFileAndNotDirectory(fullPath) {
+		_, file := filepath.Split(fullPath)
+		return strings.HasSuffix(file, "_test.go") && file != "_test.go"
 	}
 	return false
 }

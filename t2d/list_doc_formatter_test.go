@@ -62,6 +62,13 @@ func TestUnitDocsAreSeparatedByABlankLine(t *testing.T) {
 	checkDoc(t, formatter, "unit_1:\n\nunit_2:\n")
 }
 
+func TestEmptySentencesDoNotAppearInTheDoc(t *testing.T) {
+	formatter := NewListDocFormatter("")
+	emptySentence := []string{}
+	formatter.Append("unit_test.go", [][]string{emptySentence})
+	checkDoc(t, formatter, "unit:\n")
+}
+
 func checkDoc(t *testing.T, formatter *ListDocFormatter, expected string) {
 	doc := formatter.Format()
 	if doc != expected {

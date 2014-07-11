@@ -43,3 +43,11 @@ func TestFilesThatDontExistsAreInvalid(t *testing.T) {
 		t.Error("non-existing file was valid")
 	}
 }
+
+func TestIfFileNameIsExactly_UnderscoreTestDotGo_ItIsInvalid(t *testing.T) {
+	filter := NewTestFileFilter()
+	path := createFileAt(filepath.Join(os.TempDir(), "_test.go"))
+	if filter.IsValid(path) {
+		t.Error("_test.go must be invalid")
+	}
+}
