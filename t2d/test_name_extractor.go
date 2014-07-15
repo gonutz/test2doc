@@ -12,12 +12,12 @@ type TestNameExtractor struct {
 	nameMatcher *regexp.Regexp
 }
 
-func NewTestNameExtractor() TestNameExtractor {
+func NewTestNameExtractor() *TestNameExtractor {
 	r, _ := regexp.Compile("Test[^a-z].*")
-	return TestNameExtractor{nameMatcher: r}
+	return &TestNameExtractor{nameMatcher: r}
 }
 
-func (e TestNameExtractor) ExtractTestsFromFile(path string) ([]string, error) {
+func (e *TestNameExtractor) ExtractTestsFromFile(path string) ([]string, error) {
 	astFile, err := parser.ParseFile(token.NewFileSet(), path, nil, 0)
 	if err != nil {
 		return []string{}, err
@@ -48,7 +48,7 @@ func (objs objectList) Len() int           { return len(objs) }
 func (objs objectList) Less(i, j int) bool { return objs[i].Pos() < objs[j].Pos() }
 func (objs objectList) Swap(i, j int)      { objs[i], objs[j] = objs[j], objs[i] }
 
-func (e TestNameExtractor) isTestFunction(obj *ast.Object) bool {
+func (e *TestNameExtractor) isTestFunction(obj *ast.Object) bool {
 	decl, isDecl := obj.Decl.(*ast.FuncDecl)
 	if isDecl && obj.Kind == ast.Fun {
 		return e.isTestFunctionDeclaration(decl)
@@ -56,14 +56,14 @@ func (e TestNameExtractor) isTestFunction(obj *ast.Object) bool {
 	return false
 }
 
-func (e TestNameExtractor) isTestFunctionDeclaration(decl *ast.FuncDecl) bool {
+func (e *TestNameExtractor) isTestFunctionDeclaration(decl *ast.FuncDecl) bool {
 	return e.isTestName(decl.Name.Name) &&
 		doesNotReturnAnything(decl) &&
 		hasExactlyOneParameter(decl) &&
 		parameterIsOfTestType(decl)
 }
 
-func (e TestNameExtractor) isTestName(name string) bool {
+func (e *TestNameExtractor) isTestName(name string) bool {
 	return name == "Test" || e.nameMatcher.MatchString(name)
 }
 

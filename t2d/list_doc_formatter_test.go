@@ -7,7 +7,7 @@ func TestWithoutAnyTestFileTheOutputIsEmptyString(t *testing.T) {
 	checkDoc(t, formatter, "")
 }
 
-func TestFileNameWithout_TestDotGo_ComesFirst(t *testing.T) {
+func TestFirstLineIsFileNameWithout_TestDotGo(t *testing.T) {
 	formatter := NewListDocFormatter("")
 	formatter.Append("some_test.go", [][]string{})
 	checkDoc(t, formatter, "some:\n")
