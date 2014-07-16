@@ -2,10 +2,26 @@ package t2d
 
 import (
 	"errors"
+	"os"
 	"testing"
 )
 
-func TestIfFileCollectorFails_ItsErrorIsReturned(t *testing.T) {
+func TestIfFileCollectorFails_PathWith_GopathSlashSrc_IsTried(t *testing.T) {
+	os.Setenv("GOPATH", "go/path")
+	spy := &firstFailSpyCollector{}
+	creator := NewDocCreator(
+		spy,
+		yesFilter{},
+		dummyExtractor{},
+		dummyChopper{},
+		dummyFormatter{})
+	creator.CreateDocFromFolder("folder")
+	if spy.secondFolder != "go/path/src/folder" {
+		t.Error("GOPATH was not tried after failure but was", spy.secondFolder)
+	}
+}
+
+func TestIfFileCollectorFailsTwice_ItsErrorIsReturned(t *testing.T) {
 	expected := errors.New("test")
 	creator := NewDocCreator(
 		failingCollector{expected},
@@ -96,6 +112,21 @@ func TestAtTheEndTheFormattedDocStringIsReturned(t *testing.T) {
 		t.Error("wrong doc string:", doc)
 	}
 }
+
+type firstFailSpyCollector struct {
+	secondFolder string
+	tries        int
+}
+
+func (c *firstFailSpyCollector) Collect(path string) error {
+	c.tries++
+	if c.tries == 2 {
+		c.secondFolder = path
+		return nil
+	}
+	return errors.New("first try fails")
+}
+func (_ *firstFailSpyCollector) Paths() []string { return []string{} }
 
 type failingCollector struct{ err error }
 

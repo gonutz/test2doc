@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -14,12 +15,8 @@ type ListDocFormatter struct {
 }
 
 func NewListDocFormatter(cutPathPrefix string) *ListDocFormatter {
-	slashPath := forwardSlashesOnly(cutPathPrefix)
+	slashPath := filepath.ToSlash(cutPathPrefix)
 	return &ListDocFormatter{root: slashPath, newLine: fmt.Sprintln()}
-}
-
-func forwardSlashesOnly(path string) string {
-	return strings.Replace(path, `\`, "/", -1)
 }
 
 func (f *ListDocFormatter) Format() string {
@@ -41,7 +38,7 @@ func (f *ListDocFormatter) insertNewLine() {
 }
 
 func (f *ListDocFormatter) appendUnitName(testFilePath string) {
-	slashes := forwardSlashesOnly(testFilePath)
+	slashes := filepath.ToSlash(testFilePath)
 	withoutRoot := cutRootPrefix(slashes, f.root)
 	unitName := cutTestSuffix(withoutRoot)
 

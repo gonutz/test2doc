@@ -1,5 +1,10 @@
 package t2d
 
+import (
+	"os"
+	"path/filepath"
+)
+
 type DocCreator struct {
 	collector FileCollector
 	filter    FileFilter
@@ -15,7 +20,12 @@ func NewDocCreator(fc FileCollector, ff FileFilter, te TestExtractor, c NameChop
 func (doc DocCreator) CreateDocFromFolder(path string) (string, error) {
 	err := doc.collector.Collect(path)
 	if err != nil {
-		return "", err
+		withGoPath := filepath.Join(os.Getenv("GOPATH"), "src", path)
+		withGoPath = filepath.ToSlash(withGoPath)
+		err = doc.collector.Collect(withGoPath)
+		if err != nil {
+			return "", err
+		}
 	}
 	for _, path := range doc.collector.Paths() {
 		if doc.filter.IsValid(path) {
