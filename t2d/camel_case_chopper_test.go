@@ -18,12 +18,12 @@ func TestConsecutiveCapitalLettersAreEachTreatedAsOneWord(t *testing.T) {
 }
 
 func TestWordsAreSplitOnUnderscoreWhichIsThenDiscarded(t *testing.T) {
-	words := c.Chop("Test_Some_other___Function")
+	words := c.Chop("Test_Some_other___Function_")
 	checkWords(t, words, "Some", "other", "Function")
 }
 
 func TestDigitsAreKeptTogetherAsOneWord(t *testing.T) {
-	words := c.Chop("Test123Plus5equals128")
+	words := c.Chop("Test123Plus_5_equals128")
 	checkWords(t, words, "123", "Plus", "5", "equals", "128")
 }
 

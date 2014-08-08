@@ -11,7 +11,7 @@ func NewCamelCaseChopper() CamelCaseChopper { return CamelCaseChopper{} }
 
 func (c CamelCaseChopper) Chop(name string) []string {
 	nameOnly := strings.TrimPrefix(name, "Test")
-	finalWordDelimiter := "A"
+	finalWordDelimiter := "_"
 	return nameReader{readWord}.read(nameOnly + finalWordDelimiter)
 }
 
@@ -65,7 +65,7 @@ func readNumber(r rune) (nextState readFunc, chopWord bool) {
 
 func skipUnderscore(r rune) (nextState readFunc, chopWord bool) {
 	if r == '_' {
-		return skipUnderscore, true
+		return skipUnderscore, false
 	}
 	if unicode.IsDigit(r) {
 		return readNumber, true
@@ -74,5 +74,10 @@ func skipUnderscore(r rune) (nextState readFunc, chopWord bool) {
 }
 
 func isAllUnderscores(word string) bool {
-	return word == strings.Repeat("_", len(word))
+	for _, r := range word {
+		if r != '_' {
+			return false
+		}
+	}
+	return true
 }
