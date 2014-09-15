@@ -21,7 +21,7 @@ func TestIfFileCollectorFails_PathWith_GopathSlashSrc_IsTried(t *testing.T) {
 	}
 }
 
-func TestIfFileCollectorFailsTwice_ItsErrorIsReturned(t *testing.T) {
+func TestIfFileCollectorFailsEvenWithGoPath_ItsErrorIsReturned(t *testing.T) {
 	expected := errors.New("test")
 	creator := NewDocCreator(
 		failingCollector{expected},

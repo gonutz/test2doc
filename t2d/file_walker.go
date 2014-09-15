@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-var PathDoesNotExist = errors.New("The given path does not exists")
+var PathDoesNotExist = errors.New("The given path does not exist.")
 
 type FileWalker struct {
 	names []string
