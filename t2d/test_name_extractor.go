@@ -92,10 +92,7 @@ func isTestType(e ast.Expr) bool {
 	if !ok {
 		return false
 	}
-	leftOfDot, ok := selector.X.(*ast.Ident)
-	if !ok {
-		return false
-	}
+	leftOfDot := selector.X.(*ast.Ident).Name
 	rightOfDot := selector.Sel.Name
-	return leftOfDot.Name == "testing" && rightOfDot == "T"
+	return leftOfDot == "testing" && rightOfDot == "T"
 }
