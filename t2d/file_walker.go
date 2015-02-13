@@ -16,6 +16,7 @@ func NewFileWalker() *FileWalker {
 	return &FileWalker{make([]string, 0, 100)}
 }
 
+// Collect collects all files and folders under path including path itself
 func (walker *FileWalker) Collect(path string) error {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return PathDoesNotExist
