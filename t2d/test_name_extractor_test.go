@@ -39,14 +39,14 @@ func TestOnlyValidTestMethodNamesAreExtracted(t *testing.T) {
 			func TestActualTest(t *testing.T){}
 			func Test_ThisToo(_ *testing.T){}
 			
-			func TestnoTest(t *testing.T){}
-			func TestNotThis(t *T){}
+			func TestfunctionNameDoesNotHaveCapitalLetterAfterTest(t *testing.T){}
+			func TestTNotInTestingPackage(t *T){}
 			func TestNotTypeT(t *testing.U){}
 			func TestNotAPointer(t testing.T){}
-			func testNotCapitalTest(t testing.T){}
-			func TesTestIsMissingThe_t(t testing.T){}
-			func TestFewManyArguments(){}
-			func TestTooManyArguments(t *testing.T, t *testing.T){}
+			func testNotCapitalTest(t *testing.T){}
+			func TesTestIsMissingThe_t_inTheWordTest(t *testing.T){}
+			func TestMissingArgument(){}
+			func TestTooManyArguments(t, u *testing.T){}
 			func TestMustNotHaveReturnType(t *testing.T) int {}
 			var TestNoFunction int`)
 	defer deleteFile(fileName)

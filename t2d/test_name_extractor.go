@@ -6,6 +6,7 @@ import (
 	"go/token"
 	"regexp"
 	"sort"
+	"strings"
 )
 
 type TestNameExtractor struct {
@@ -64,7 +65,10 @@ func (e *TestNameExtractor) isTestFunctionDeclaration(decl *ast.FuncDecl) bool {
 }
 
 func (e *TestNameExtractor) isTestName(name string) bool {
-	return name == "Test" || e.nameMatcher.MatchString(name)
+	if name == "Test" {
+		return true
+	}
+	return strings.HasPrefix(name, "Test") && e.nameMatcher.MatchString(name)
 }
 
 func doesNotReturnAnything(decl *ast.FuncDecl) bool {
