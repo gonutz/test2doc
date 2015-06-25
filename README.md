@@ -10,7 +10,7 @@ This tool walks through a file tree and extracts for every test unit that it fin
 
 Per default the tool prints its results to the standard output, which can easily be redirected to a file via the > or >> operators.
 
-The tool is very similar to TestDox for C++ and TestDox or BDoc for Java.
+The tool is very similar to [TestDox](http://www.eld.leidenuniv.nl/~moene/Home/projects/testdox/) for C++ and [TestDox](http://agiledox.sourceforge.net/) or [BDoc](https://code.google.com/p/bdoc/) for Java.
 
 Example
 -------
@@ -28,3 +28,15 @@ then the resulting description of the unit will look like this:
 		- any number plus 0 is always the same
 		- Adding More Than Two Numbers Is Insanely Complex
 
+Installation and Usage
+----------------------
+
+To install test2doc you can use the go tool:
+
+	go get code.google.com/p/test2doc
+
+This will download and build the project. It creates a binary executable in your GOPATH's bin folder. Assuming that you added the bin folder to your PATH you can now simply call the program with the root directory of your code as the only parameter. For example you can apply the tool to its own source by typing
+
+	test2doc code.google.com/p/test2doc
+
+The tool will go through that directory recursively and extract the tests from all found test files (files that end in `_test.go`). If the path is not a directory but a single test file, only that file will be documented. 
