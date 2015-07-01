@@ -1,8 +1,8 @@
 package main
 
 import (
-	"code.google.com/p/test2doc/t2d"
 	"fmt"
+	"github.com/gonutz/test2doc/t2d"
 	"os"
 )
 
@@ -18,7 +18,7 @@ func main() {
 		t2d.NewTestFileFilter(),
 		t2d.NewTestNameExtractor(),
 		t2d.NewCamelCaseChopper(),
-		t2d.NewListDocFormatter())
+		t2d.NewListDocFormatter(path))
 	doc, err := docCreator.CreateDocFromFolder(path)
 	fmt.Println(doc)
 	if err != nil {
