@@ -35,10 +35,10 @@ Installation and Usage
 
 To install test2doc you can use the go tool:
 
-	go get code.google.com/p/test2doc
+	go get github.com/gonutz/test2doc
 
-This will download and build the project. It creates a binary executable in your GOPATH's bin folder. Assuming that you added the bin folder to your PATH you can now simply call the program with the root directory of your code as the only parameter. For example you can apply the tool to its own source by typing
+This will download and build the project. It creates a binary executable in your GOPATH's bin folder. Assuming that you added the bin folder to your PATH you can now simply call the program with the root directory of your code as the only parameter. If you do not give it an absolute path, it will look in your GOPATH. For example you can apply the tool to its own source by typing
 
-	test2doc code.google.com/p/test2doc
+	test2doc github.com/gonutz/test2doc
 
 The tool will go through that directory recursively and extract the tests from all found test files (files that end in `_test.go`). If the path is not a directory but a single test file, only that file will be documented. 
