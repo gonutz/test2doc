@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestIfPathDoesNotExistsAnErrorIsReturned(t *testing.T) {
+func TestIfPathDoesNotExistAnErrorIsReturned(t *testing.T) {
 	walker := NewFileWalker()
 	err := walker.Collect("invalid///path")
 	if err != PathDoesNotExist {
