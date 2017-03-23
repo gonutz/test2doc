@@ -1,7 +1,7 @@
 test2doc
 ========
 
-Generate documentation for your go units from your unit tests.
+Generate documentation for your Go units from your unit tests.
 
 Description
 -----------
