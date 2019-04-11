@@ -43,7 +43,7 @@ func TestIfRootPathEqualsPath_TheFileNameIsUsed(t *testing.T) {
 	checkDoc(t, formatter, "my:\n")
 }
 
-func TestEverySentenceIsIndentendOnANewLine(t *testing.T) {
+func TestEverySentenceIsIndentedOnANewLine(t *testing.T) {
 	formatter := NewListDocFormatter("")
 	formatter.Append("unit_test.go", [][]string{
 		[]string{"a", "b", "c"},
